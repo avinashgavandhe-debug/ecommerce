@@ -17,29 +17,47 @@ import {
   Shield,
   ArrowLeft,
 } from "lucide-react";
+import EditProfileModal from "./common/EditProfileModal";
+import { useAuth } from "../hooks/useAuth";
 
-const UserDetails = ({ user }) => {
-  const [userDetails, setUserDetails] = useState(null);
+const UserDetails = () => {
+  const { user, updateUser } = useAuth();
+  const [userDetails, setUserDetails] = useState(user);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
+  console.log("user", user);
 
-  const fetchUserDetails = async () => {
-    try {
-      const response = await fetch(
-        `https://dummyjson.com/users/${user?.id || 1}`
-      );
-      const data = await response.json();
-      setUserDetails(data);
-    } catch (error) {
-      console.error("Failed to fetch user details:", error);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    setUserDetails(user);
+    setLoading(false)
+  }, [user]);
+
+  const handleSave = async (updatedData) => {
+    const res = await updateUser(user.id, updatedData);
+    if (res.success) {
+      alert("Profile updated successfully!");
+      setIsModalOpen(false);
+      // Optionally, refresh user details
+    } else {
+      alert("Update failed: " + res.message);
     }
   };
+
+  //   const fetchUserDetails = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://dummyjson.com/users/${user?.id || 1}`
+  //       );
+  //       const data = await response.json();
+  //       setUserDetails(data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch user details:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
   const InfoCard = ({ icon: Icon, label, value, fullWidth = false }) => (
     <div
@@ -113,7 +131,10 @@ const UserDetails = ({ user }) => {
             onClick={() => navigate(-1)}
             className="mb-6 flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white px-5 py-3 rounded-xl font-bold hover:bg-white/30 transition-all group"
           >
-            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft
+              size={20}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
             Back to Home
           </button>
 
@@ -145,9 +166,11 @@ const UserDetails = ({ user }) => {
                 @{userDetails.username}
               </p>
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <button className="bg-white text-violet-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg flex items-center gap-2">
-                  <Edit size={18} />
-                  Edit Profile
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-white text-violet-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg flex items-center gap-2"
+                >
+                  <Edit size={18} /> Edit Profile
                 </button>
                 <button className="bg-white/20 backdrop-blur-sm border-2 border-white/50 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/30 transition-all flex items-center gap-2">
                   <Settings size={18} />
@@ -213,11 +236,7 @@ const UserDetails = ({ user }) => {
                 label="Date of Birth"
                 value={userDetails.birthDate}
               />
-              <InfoCard
-                icon={User}
-                label="Gender"
-                value={userDetails.gender}
-              />
+              <InfoCard icon={User} label="Gender" value={userDetails.gender} />
             </div>
           </section>
 
@@ -385,6 +404,13 @@ const UserDetails = ({ user }) => {
           </section>
         </div>
       </div>
+      {isModalOpen && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };
