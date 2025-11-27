@@ -27,11 +27,11 @@ const UserDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  console.log("user", user);
+  console.log("UserDetails", userDetails);
 
   useEffect(() => {
     setUserDetails(user);
-    setLoading(false)
+    setLoading(false);
   }, [user]);
 
   const handleSave = async (updatedData) => {
@@ -39,25 +39,10 @@ const UserDetails = () => {
     if (res.success) {
       alert("Profile updated successfully!");
       setIsModalOpen(false);
-      // Optionally, refresh user details
     } else {
       alert("Update failed: " + res.message);
     }
   };
-
-  //   const fetchUserDetails = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `https://dummyjson.com/users/${user?.id || 1}`
-  //       );
-  //       const data = await response.json();
-  //       setUserDetails(data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch user details:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   const InfoCard = ({ icon: Icon, label, value, fullWidth = false }) => (
     <div
