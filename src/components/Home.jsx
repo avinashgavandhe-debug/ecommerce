@@ -5,7 +5,6 @@ import Cart from "./Cart";
 import Products from "./Products";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
-import { ShoppingCart, LogOut, User } from "lucide-react";
 import UserDetails from "./UserDetails";
 import Navbar from "./common/Navbar";
 
@@ -13,8 +12,8 @@ function Home() {
   const [isLogin, setIsLogin] = useState(true);
   const [showCart, setShowCart] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const { user, logout, loading } = useAuth();
-  const { cart } = useCart();
+  const { user,  loading } = useAuth();
+  
 
   if (loading) {
     return (
@@ -35,7 +34,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* NAVBAR */}
-      <Navbar setShowProfile={setShowProfile} setShowCart={setShowCart}/>
+      <Navbar setShowCart={setShowCart}/>
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -44,7 +43,7 @@ function Home() {
 
       {/* MODALS */}
       {showCart && <Cart onClose={() => setShowCart(false)} />}
-      {showProfile && <UserDetails onClose={() => setShowProfile(false)} />}
+      {/* {showProfile && <UserDetails user={user} onClose={() => setShowProfile(false)} />} */}
     </div>
   );
 }

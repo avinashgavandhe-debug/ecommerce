@@ -56,13 +56,35 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (userId, updatedData) => {
+    try {
+      const response = await fetch(`${BASE_URL}/users/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Merge updated data with existing user data
+        const updatedUser = { ...user, ...data };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        return { success: true, data: updatedUser };
+      }
+      return { success: false, message: "Update failed" };
+    } catch (error) {
+      return { success: false, message: "Network error" };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register,updateUser, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
