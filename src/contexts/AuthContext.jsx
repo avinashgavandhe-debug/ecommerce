@@ -4,8 +4,11 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+   
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -17,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch("https://dummyjson.com/auth/login", {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, expiresInMins: 30 }),
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await fetch("https://dummyjson.com/users/add", {
+      const response = await fetch(`${BASE_URL}/users/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),

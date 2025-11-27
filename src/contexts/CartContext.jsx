@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [cart, setCart] = useState({
     products: [],
     total: 0,
@@ -23,7 +24,7 @@ export const CartProvider = ({ children }) => {
     if (!user) return;
     try {
       const response = await fetch(
-        `https://dummyjson.com/carts/user/${user.id}`
+        `${BASE_URL}/carts/user/${user.id}`
       );
       const data = await response.json();
 
@@ -52,7 +53,7 @@ export const CartProvider = ({ children }) => {
       await updateQuantity(product.id, existingProduct.quantity + 1);
     } else {
       try {
-        const response = await fetch("https://dummyjson.com/carts/add", {
+        const response = await fetch(`${BASE_URL}/carts/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -108,7 +109,7 @@ export const CartProvider = ({ children }) => {
     if (!product) return;
 
     try {
-      const response = await fetch(`https://dummyjson.com/carts/${user.id}`, {
+      const response = await fetch(`${BASE_URL}/carts/${user.id}`, {
         method: "DELETE",
       });
 
