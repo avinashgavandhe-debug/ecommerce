@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const RegisterSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required").min(2, "Too short"),
@@ -13,10 +14,11 @@ const RegisterSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
-export default function Register({ onToggle }) {
+export default function Register() {
   const { register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formMsg, setFormMsg] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen w-full flex">
@@ -67,9 +69,10 @@ export default function Register({ onToggle }) {
 
                 if (result.success) {
                   setFormMsg("Registration successful! Redirecting...");
-                  setTimeout(() => {
-                    onToggle();
-                  }, 1500);
+                  navigate("/login")
+                //   setTimeout(() => {
+                //     onToggle();
+                //   }, 1500);
                 } else {
                   setFormMsg(result.message || "Registration failed");
                 }
@@ -174,7 +177,7 @@ export default function Register({ onToggle }) {
             Already a member?{" "}
             <span
               className="text-black font-medium cursor-pointer hover:opacity-70 transition"
-              onClick={onToggle}
+              onClick={() => navigate("/login")}
             >
               Login
             </span>
